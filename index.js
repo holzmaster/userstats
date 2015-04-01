@@ -206,10 +206,10 @@ getBenis(username, function(err, profileData) {
 			var benisPerHour = benisPerMinute * 60;
 			var benisPerDay = benisPerHour * 24;
 
-			console.log("Benis/Sekunde: %d (%d µBenis/Sekunde)", benisPerSecond, benisPerSecond * 1000000);
-			console.log("Benis/Minute: %d (%d µBenis/Minute)", benisPerMinute, benisPerMinute * 1000000);
-			console.log("Benis/Stunde: %d", benisPerHour);
-			console.log("Benis/Tag: %d", benisPerDay);
+			console.log("Benis/Sekunde: %d (%d µBenis/Sekunde)", benisPerSecond.toFixed(6), (benisPerSecond * 1000000).toFixed(2));
+			console.log("Benis/Minute: %d (%d µBenis/Minute)", benisPerMinute.toFixed(6), (benisPerMinute * 1000000).toFixed(2));
+			console.log("Benis/Stunde: %d", benisPerHour.toFixed(6));
+			console.log("Benis/Tag: %d", benisPerDay.toFixed(6));
 
 			var fileName = argv.file || null;
 			if(fileName)
