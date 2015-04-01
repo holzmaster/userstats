@@ -184,14 +184,14 @@ getBenis(username, function(err, profileData) {
 			console.log("\t%d (%d% von total)", uploadBenis, (uploadBenis / totalBenis * 100).toFixed(2));
 			console.log("\t\t%d up", stats.uploads.up);
 			console.log("\t\t%d down", stats.uploads.down);
-			console.log("\t\t%d Benis/Upload", (stats.uploads.count / uploadBenis).toFixed(2));
+			console.log("\t%d Benis/Upload", (stats.uploads.count / uploadBenis).toFixed(2));
 
 			console.log("Kommentare: %d", stats.comments.count);
 			console.log("Benis für Kommentare:");
 			console.log("\t%d (%d% von total)", commentBenis, (commentBenis / totalBenis * 100).toFixed(2));
 			console.log("\t\t%d up", stats.comments.up);
 			console.log("\t\t%d down", stats.comments.down);
-			console.log("\t\t%d Benis/Kommentar", (stats.comments.count / commentBenis).toFixed(2));
+			console.log("\t%d Benis/Kommentar", (stats.comments.count / commentBenis).toFixed(2));
 
 			console.log("Tags: %d", stats.tags.count);
 			console.log("Benis für Tags:");
