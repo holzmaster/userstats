@@ -192,6 +192,7 @@ getBenis(username, function(err, profileData) {
 			console.log("\t\t%d up", stats.comments.up);
 			console.log("\t\t%d down", stats.comments.down);
 			console.log("\t%d Benis/Kommentar", (stats.comments.count / commentBenis).toFixed(2));
+			console.log("Durchschnittliche Kommentarlänge: %d", stats.comments.averageLength.toFixed(2));
 
 			console.log("Tags: %d", stats.tags.count);
 			console.log("Benis für Tags:");
