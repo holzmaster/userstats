@@ -1,6 +1,7 @@
 var request = require("request");
 var fs = require("fs");
 //require("request-debug")(request);
+
 var argv = require("yargs")
 			.alias("u", "user")
 			.alias("f", "file")
@@ -66,7 +67,7 @@ function fetchComments(user, cb, ts, comments)
 {
 	ts = ts || 1;
 	comments = comments || [];
-	// console.log("Comments fetched: %d", comments.length);
+
 	getCommentsAfter(user, ts, function(err, res) {
 		if(err)
 			return cb(err, null);
@@ -104,7 +105,6 @@ function fetchUploads(user, cb, id, uploads)
 {
 	id = id || 0;
 	uploads = uploads || [];
-	// console.log("Uploads fetched: %d", uploads.length);
 
 	getUploadsOlder(user, id, function(err, res) {
 		if(err)
@@ -171,15 +171,6 @@ getBenis(username, function(err, profileData) {
 				gatherUploadStats(uploads, stats);
 
 			gatherTagStats(profileData, stats);
-
-			// delete stats.uploads.upPattern;
-			// delete stats.uploads.downPattern;
-			// delete stats.uploads.totalPattern;
-			// delete stats.uploads.raw;
-			// delete stats.comments.upPattern;
-			// delete stats.comments.downPattern;
-			// delete stats.comments.totalPattern;
-			// delete stats.comments.raw;
 
 			var uploadBenis = stats.uploads.up - stats.uploads.down;
 			var commentBenis = stats.comments.up - stats.comments.down;
@@ -250,11 +241,6 @@ function gatherTagStats(profileData, s)
 {
 	var commentTotal = s.comments.up - s.comments.down;
 	var uploadTotal = s.uploads.up - s.uploads.down;
-
-	//console.log(s.comments.up);
-	//console.log(s.comments.down);
-	//console.log(s.uploads.up);
-	//console.log(s.uploads.down);
 
 	s.tags.total = profileData.user.score - (commentTotal + uploadTotal);
 	s.tags.count = profileData.tagCount;
