@@ -1,0 +1,29 @@
+{
+  "author": "holzmaster (https://github.com/pr0nopoly)",
+  "main": "index.js",
+  "name": "pr0-userstats",
+  "description": "Userstatistiken",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pr0nopoly/userstats.git"
+  },
+  "dependencies": {
+    "request": "~2.54",
+    "yargs": "~3.6"
+  },
+  "devDependencies": {
+    "request-debug": "~0.1"
+  },
+  "keywords": [],
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/pr0nopoly/userstats/issues"
+  },
+  "license": "GPL-3.0",
+  "private": true,
+  "readmeFilename": "README.md"
+}
