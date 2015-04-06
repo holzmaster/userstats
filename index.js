@@ -41,8 +41,10 @@ var stats = {
 		count: 0
 	},
 	user: {
-	}
-}
+	},
+	badges: [
+	]
+};
 
 function getBenis(user, cb)
 {
@@ -151,12 +153,64 @@ function apiCall(method, qs, cb)
 	});
 }
 
+function addDynamicBadges(profileData)
+{
+	var d = profileData;
+	var commentBadge = null;
+	var yearBadge = null;
+
+	if(d.commentCount > 1000)
+	{
+		commentBadge = {
+			link: null,
+			image: "comments.png",
+			cssClass: "pr0gramm-badge-comments"
+		};
+
+		var n = 1000;
+		if(d.commentCount > 5000)
+		{
+			n = 5000;
+			if(d.commentCount > 10000)
+			{
+				n = 10000;
+			}
+		}
+		commentBadge.description = "Hat mehr als " + n + " Kommentare verfasst";
+		commentBadge.extra = (n / 1000) + "k";
+	}
+
+	var now = unixTime();
+	var active = now - d.user.registered;
+	var oneYear = 60 * 60 * 24 * 365;
+	var yearsActive = Math.floor(active / oneYear);
+	if(yearsActive > 0)
+	{
+		yearBadge = {
+			link: null,
+			image: "years.png",
+			description: "Hat " + yearsActive + " Jahre auf pr0gramm verschwendet",
+			extra: yearsActive,
+			cssClass: "pr0gramm-badge-years"
+		};
+	}
+
+	var badges = d.badges;
+	if(commentBadge)
+		badges.push(commentBadge);
+	if(yearBadge)
+		badges.push(yearBadge);
+
+	return badges;
+}
+
 function unixTime() {
 	return Math.floor(Date.now() / 1000);
 }
 
 getBenis(username, function(err, profileData) {
 	stats.user = profileData.user;
+	stats.badges = addDynamicBadges(profileData);
 
 	console.log("Fetching stats for %s", profileData.user.name);
 
