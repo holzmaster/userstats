@@ -18,6 +18,8 @@ var stats = {
 		down: 0,
 		averageLength: 0,
 		count: 0,
+		worst: { id: 0, itemId: 0, up: 0, down: 0, content: null, thumb: null },
+		best: { id: 0, itemId: 0, up: 0, down: 0, content: null, thumb: null },
 		upPattern: "",
 		downPattern: "",
 		totalPattern: "",
@@ -27,6 +29,8 @@ var stats = {
 		up: 0,
 		down: 0,
 		count: 0,
+		worst: { id: 0, up: 0, down: 0, thumb: null },
+		best: { id: 0, up: 0, down: 0, thumb: null },
 		upPattern: "",
 		downPattern: "",
 		totalPattern: "",
@@ -184,20 +188,20 @@ getBenis(username, function(err, profileData) {
 			console.log("\t%d (%d% von total)", uploadBenis, (uploadBenis / totalBenis * 100).toFixed(2));
 			console.log("\t\t%d up", stats.uploads.up);
 			console.log("\t\t%d down", stats.uploads.down);
-			console.log("\t%d Benis/Upload", (stats.uploads.count / uploadBenis).toFixed(2));
+			console.log("\t%d Benis/Upload", (uploadBenis / stats.uploads.count).toFixed(2));
 
 			console.log("Kommentare: %d", stats.comments.count);
 			console.log("Benis für Kommentare:");
 			console.log("\t%d (%d% von total)", commentBenis, (commentBenis / totalBenis * 100).toFixed(2));
 			console.log("\t\t%d up", stats.comments.up);
 			console.log("\t\t%d down", stats.comments.down);
-			console.log("\t%d Benis/Kommentar", (stats.comments.count / commentBenis).toFixed(2));
+			console.log("\t%d Benis/Kommentar", (commentBenis / stats.comments.count).toFixed(2));
 			console.log("Durchschnittliche Kommentarlänge: %d", stats.comments.averageLength.toFixed(2));
 
 			console.log("Tags: %d", stats.tags.count);
 			console.log("Benis für Tags:");
 			console.log("\t%d (%d% von total)", stats.tags.total, (stats.tags.total / totalBenis * 100).toFixed(2));
-			console.log("\t%d Benis/Tag", (stats.comments.count / stats.tags.total).toFixed(2));
+			console.log("\t%d Benis/Tag", (stats.tags.total / stats.comments.count).toFixed(2));
 
 			var now = unixTime();
 			var delta = now - profileData.user.registered;
@@ -249,17 +253,33 @@ function gatherTagStats(profileData, s)
 
 function gatherUploadStats(uploads, s)
 {
+	var best = null;
+	var worst = null;
+
 	for(var i = 0; i < uploads.length; ++i)
 	{
 		var u = uploads[i];
 		var uup = parseInt(u.up);
 		var udown = parseInt(u.down);
+		var uploadScore = uup - udown;
+
+		if(best == null || uploadScore > (best.up - best.down))
+		{
+			best = { id: u.id, up: uup, down: udown, thumb: u.thumb};
+		}
+		if(worst == null || uploadScore < (worst.up - worst.down))
+		{
+			worst = { id: u.id, up: uup, down: udown, thumb: u.thumb};
+		}
+
 		s.uploads.upPattern += uup + " ";
 		s.uploads.downPattern += udown + " ";
-		s.uploads.totalPattern += (uup - udown).toString() + " ";
+		s.uploads.totalPattern += uploadScore.toString() + " ";
 		s.uploads.up += uup;
 		s.uploads.down += udown;
 	}
+	s.uploads.best = best;
+	s.uploads.worst = worst;
 	s.uploads.count = uploads.length;
 	s.uploads.upPattern = s.uploads.upPattern.slice(0, -1);
 	s.uploads.downPattern = s.uploads.downPattern.slice(0, -1);
@@ -275,12 +295,25 @@ function clearCommentStats(s)
 function gatherCommentStats(comments, s)
 {
 	var lengthSum = 0;
+	var best = null;
+	var worst = null;
 
 	for(var i = 0; i < comments.length; ++i)
 	{
 		var c = comments[i];
 		var cup = parseInt(c.up);
-		var cdown = parseInt(c.down)
+		var cdown = parseInt(c.down);
+		var commentScore = cup - cdown;
+
+		if(best == null || commentScore > (best.up - best.down))
+		{
+			best = { id: c.id, itemId: c.itemId, up: cup, down: cdown, content: c.content, thumb: c.thumb};
+		}
+		if(worst == null || commentScore < (worst.up - worst.down))
+		{
+			worst = { id: c.id, itemId: c.itemId, up: cup, down: cdown, content: c.content, thumb: c.thumb};
+		}
+
 		s.comments.upPattern += cup + " ";
 		s.comments.downPattern += cdown + " ";
 		s.comments.totalPattern += (cup - cdown).toString() + " ";
@@ -289,6 +322,8 @@ function gatherCommentStats(comments, s)
 		lengthSum += (c.content || "").length;
 	}
 
+	s.comments.best = best;
+	s.comments.worst = worst;
 	s.comments.count = comments.length;
 	s.comments.averageLength = lengthSum / comments.length;
 	s.comments.upPattern = s.comments.upPattern.slice(0, -1);
